@@ -1,0 +1,64 @@
+<!-- templates/admin.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="admin-panel">
+    <h1>Админ-панель</h1>
+    
+    <div class="status">
+        <p><strong>Голосование активно:</strong> {{ 'Да' if active else 'Нет' }}</p>
+        {% if not active %}
+        <form method="POST" action="{{ url_for('start_voting') }}" style="display:inline;">
+            <button type="submit">Запустить голосование</button>
+        </form>
+        {% else %}
+        <form method="POST" action="{{ url_for('end_voting') }}" style="display:inline;"
+              onsubmit="return confirm('Завершить голосование? Это нельзя отменить.')">
+            <button type="submit">Завершить голосование</button>
+        </form>
+        {% endif %}
+    </div>
+
+    <div class="forms">
+        <div class="form-section">
+            <h3>Добавить номинанта</h3>
+            <form method="POST" action="{{ url_for('add_nominee') }}">
+                <input type="text" name="name" placeholder="Имя сотрудника" required>
+                <button type="submit">Добавить</button>
+            </form>
+        </div>
+
+        <div class="form-section">
+            <h3>Добавить голосующего</h3>
+            <form method="POST" action="{{ url_for('add_voter') }}">
+                <input type="text" name="username" placeholder="Логин" required>
+                <input type="password" name="password" placeholder="Пароль" required>
+                <button type="submit">Создать аккаунт</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="lists">
+        <div>
+            <h3>Номинанты ({{ nominees|length }})</h3>
+            <ul>{% for n in nominees %}<li>{{ n }}</li>{% endfor %}</ul>
+        </div>
+        <div>
+            <h3>Голосующие ({{ voters|length }})</h3>
+            <ul>{% for v in voters %}<li>{{ v }}</li>{% endfor %}</ul>
+        </div>
+    </div>
+
+    <div class="scores">
+        <h3>Рейтинг</h3>
+        <table>
+            <tr><th>Имя</th><th>Очки</th></tr>
+            {% for name, score in scores %}
+            <tr><td>{{ name }}</td><td>{{ score }}</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <a href="{{ url_for('logout') }}" class="btn btn-outline">Выйти из админки</a>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+<!-- templates/vote.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+{% if show_results %}
+    <div class="results-box">
+        <h2>Результаты голосования</h2>
+        <table>
+            <thead>
+                <tr><th>Место</th><th>Имя</th><th>Очки</th></tr>
+            </thead>
+            <tbody>
+                {% for i, (name, score) in enumerate(scores) %}
+                <tr>
+                    <td>{{ i+1 }}</td>
+                    <td>{{ name }}</td>
+                    <td>{{ score }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('logout') }}" class="btn">Выйти</a>
+    </div>
+{% else %}
+    <div class="form-box">
+        <h2>Голосование за лучшего сотрудника</h2>
+        <p>Выберите трёх разных кандидатов и расставьте их по приоритету:</p>
+        <form method="POST">
+            <label>1 место (3 очка):</label>
+            <select name="first" required>
+                <option value="">— Выберите —</option>
+                {% for n in nominees %}
+                <option value="{{ n.id }}">{{ n.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label>2 место (2 очка):</label>
+            <select name="second" required>
+                <option value="">— Выберите —</option>
+                {% for n in nominees %}
+                <option value="{{ n.id }}">{{ n.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label>3 место (1 очко):</label>
+            <select name="third" required>
+                <option value="">— Выберите —</option>
+                {% for n in nominees %}
+                <option value="{{ n.id }}">{{ n.name }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Проголосовать</button>
+        </form>
+        <a href="{{ url_for('logout') }}" class="btn btn-outline">Выйти</a>
+    </div>
+{% endif %}
+{% endblock %}
